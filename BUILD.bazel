@@ -1,0 +1,48 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library", "js_run_binary", "js_run_devserver", "js_test")
+load("@aspect_bazel_lib//lib:directory_path.bzl", "directory_path")
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("//:defs.bzl", "ng_application")
+
+package(default_visibility = ["//visibility:public"])
+# Create the root of the "virtual store" of npm dependencies under bazel-out.
+# This must be done in the package where the pnpm workspace is rooted.
+npm_link_all_packages(name = "node_modules")
+
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//visibility:public"],
+)
+
+ts_config(
+    name = "tsconfig.app",
+    src = "tsconfig.app.json",
+    deps = ["tsconfig.json"],
+    visibility = ["//visibility:public"],
+)
+
+ts_config(
+    name = "tsconfig.spec",
+    src = "tsconfig.spec.json",
+    deps = ["tsconfig.json"],
+    visibility = ["//visibility:public"],
+)
+
+ts_config(
+    name = "tsconfig.node",
+    src = "tsconfig.node.json",
+    deps = ["tsconfig.json"],
+    visibility = ["//visibility:public"],
+)
+
+ng_application(
+    name = "another_try_app",
+    html_assets = [],
+    test_deps = [],
+    deps = [],
+)
+
+
